@@ -3,18 +3,20 @@ import datetime
 
 def main():
     print("Welcome to the Maths Test!")
-    name = input("What is you name?")
+    name = input("What is your name? ")
 
     options = []
-    options.append("random")
+    RANDOM = "Random Test"
+    options.append(RANDOM)
     options += (list(range(2,13)))
 
     try:
         type = pick("test", options)
     except Exception as e:
         print(e)
+        return
 
-    if type == 1:
+    if type == RANDOM:
         test_type = "random test"
     else:
         test_type = "{0} times table test".format(type)
@@ -35,7 +37,7 @@ def main():
 
         while loop is True:
 
-            if type == 1:
+            if type == RANDOM:
                 a = random.randint(2,12)
             else:
                 a = type
@@ -73,7 +75,7 @@ def main():
     #print("That took you {0}".format(time.strftime("%M:%S", end_time-start_time)))
 
 
-    print("\nEnd of the Maths Test\n{0}, you scored {1} out of {2}".format(name, score, questions))
+    print("\nEnd of the Maths Test\n{0}, you scored {1} out of {2} in the {3}.".format(name, score, questions, test_type))
     print("Correct answers:")
 
     if len(passed) > 0:
