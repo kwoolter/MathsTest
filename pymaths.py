@@ -24,7 +24,7 @@ def main():
     input("OK {0} - press Enter to start the {1}.\n".format(name, test_type))
 
     score = 0
-    questions = 10
+    questions = 12
 
     passed = []
     failed = []
@@ -38,11 +38,11 @@ def main():
         while loop is True:
 
             if type == RANDOM:
-                a = random.randint(2,12)
+                a = random.randint(1,12)
             else:
                 a = type
 
-            b = random.randint(2,12)
+            b = random.randint(1,12)
 
             if (a,b) not in passed and (b,a) not in passed:
                 loop = False
