@@ -47,6 +47,10 @@ def main():
             if (a,b) not in passed and (b,a) not in passed:
                 loop = False
 
+        # Randomly reverse the questions
+        if random.randint(0,10) > 5:
+            a,b = b,a
+
         print("Question {0}: What is {1} x {2}?".format(i,a,b))
 
         good = False
