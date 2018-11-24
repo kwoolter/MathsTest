@@ -82,16 +82,16 @@ def main():
             else:
                 print("Not a number, try again.")
 
-        if type == (MULTIPLICATION and answer == (a*b)) or (type == DIVISION and answer == (a/b)):
+        if type == MULTIPLICATION:
+            correct_answer = a*b
+        else:
+            correct_answer = a/b
+
+        if answer == correct_answer:
             print("*** Correct ***")
             score += 1
             passed.append(question)
         else:
-            if type == MULTIPLICATION:
-                correct_answer = a*b
-            else:
-                correct_answer = a/b
-
             print("Wrong !!!  The correct answer is {0} {1} {2} = {3:0.0f}".format(a,types[type],b,correct_answer))
             failed.append(question)
 
