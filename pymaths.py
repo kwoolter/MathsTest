@@ -2,8 +2,18 @@ import random
 import datetime
 
 def main():
+    MULTIPLICATION = "multiplication"
+    DIVISION = "division"
+
     print("Welcome to the Maths Test!")
     name = input("What is your name? ")
+
+    types = {"muliplication" : "x", "division" : "/"}
+    try:
+        type = pick("test type", list(types.keys()))
+    except Exception as e:
+        print(e)
+        return
 
     options = []
     RANDOM = "Random Test"
@@ -11,15 +21,15 @@ def main():
     options += (list(range(2,13)))
 
     try:
-        type = pick("test", options)
+        number = pick("test", options)
     except Exception as e:
         print(e)
         return
 
-    if type == RANDOM:
+    if number == RANDOM:
         test_type = "random test"
     else:
-        test_type = "{0} times table test".format(type)
+        test_type = "{0} {1} test".format(number, type)
 
     input("OK {0} - press Enter to start the {1}.\n".format(name, test_type))
 
@@ -40,7 +50,7 @@ def main():
             if type == RANDOM:
                 a = random.randint(1,12)
             else:
-                a = type
+                a = number
 
             b = random.randint(1,12)
 
@@ -51,7 +61,7 @@ def main():
         if random.randint(0,10) > 5:
             a,b = b,a
 
-        print("Question {0}: What is {1} x {2}?".format(i,a,b))
+        print("Question {0}: What is {1} {2} {3}?".format(i,a,types[type],b))
 
         good = False
         while good is False:
@@ -62,12 +72,12 @@ def main():
             else:
                 print("Not a number, try again.")
 
-        if answer == (a*b):
+        if type == ("multiplication" and answer == (a*b)) or (type == "division" and answer == (a/b)):
             print("*** Correct ***")
             score += 1
             passed.append((a,b))
         else:
-            print("Wrong !!!  The correct answer is {0} x {1} = {2}".format(a,b,a*b))
+            print("Wrong !!!  The correct answer is {0} {1} {2} = {3}".format(a,types[type],b,a*b))
             failed.append((a,b))
 
         end_time = datetime.time()
@@ -84,7 +94,8 @@ def main():
 
     if len(passed) > 0:
         for a,b in passed:
-            print("{0} x {1} = {2}".format(a,b, a*b))
+
+            print("{0} {1} {2} = {3}".format(a,types[type],b, a*b))
 
     if len(failed) > 0:
         print("Wrong answers:")
