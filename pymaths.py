@@ -2,6 +2,7 @@ import random
 import datetime
 
 def main():
+
     MULTIPLICATION = "multiplication"
     DIVISION = "division"
 
@@ -34,7 +35,7 @@ def main():
     input("OK {0} - press Enter to start the {1}.\n".format(name, test_type))
 
     score = 0
-    questions = 12
+    questions = 5
 
     passed = []
     failed = []
@@ -54,15 +55,21 @@ def main():
 
             b = random.randint(1,12)
 
-            if (a,b) not in passed and (b,a) not in passed:
+            # If we have not already passed this combination the we are good to ask this question
+            if (a,b) not in passed:
                 loop = False
 
-        # Randomly reverse the questions
+        question = (a,b)
+
+        # For multiplication randomly reverse the questions
         if type == MULTIPLICATION and random.randint(0,10) > 5:
             a,b = b,a
 
+        # For divide need to make b the answer to the question
         if type == DIVISION:
-            a = a*b
+            a_temp = a
+            a = a * b
+            b = a_temp
 
         print("Question {0}: What is {1} {2} {3}?".format(i,a,types[type],b))
 
@@ -78,15 +85,15 @@ def main():
         if type == (MULTIPLICATION and answer == (a*b)) or (type == DIVISION and answer == (a/b)):
             print("*** Correct ***")
             score += 1
-            passed.append((a,b))
+            passed.append(question)
         else:
             if type == MULTIPLICATION:
                 correct_answer = a*b
             else:
                 correct_answer = a/b
 
-            print("Wrong !!!  The correct answer is {0} {1} {2} = {3}".format(a,types[type],b,correct_answer))
-            failed.append((a,b))
+            print("Wrong !!!  The correct answer is {0} {1} {2} = {3:0.0f}".format(a,types[type],b,correct_answer))
+            failed.append(question)
 
         end_time = datetime.time()
 
@@ -105,9 +112,12 @@ def main():
             if type == MULTIPLICATION:
                 answer = a*b
             else:
-                answer = a/b
+                # For divide need to make b the answer to the question
+                answer = b
+                a = a * b
+                b = int(a / answer)
 
-            print("{0} {1} {2} = {3}".format(a,types[type],b, answer))
+            print("{0} {1} {2} = {3:0.0f}".format(a,types[type],b, answer))
 
     if len(failed) > 0:
         print("Wrong answers:")
@@ -115,8 +125,12 @@ def main():
             if type == MULTIPLICATION:
                 answer = a*b
             else:
-                answer = a/b
-            print("{0} x {1} = {2}".format(a,b, answer))
+                # For divide need to make b the answer to the question
+                answer = b
+                a = a * b
+                b = int(a / answer)
+
+            print("{0} {1} {2} = {3:0.0f}".format(a,types[type],b, answer))
 
 __author__ = 'user'
 
