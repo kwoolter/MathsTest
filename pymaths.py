@@ -35,7 +35,7 @@ def main():
     input("OK {0} - press Enter to start the {1}.\n".format(name, test_type))
 
     score = 0
-    questions = 5
+    questions = 12
 
     passed = []
     failed = []
