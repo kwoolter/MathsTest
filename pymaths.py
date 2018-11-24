@@ -8,7 +8,7 @@ def main():
     print("Welcome to the Maths Test!")
     name = input("What is your name? ")
 
-    types = {"muliplication" : "x", "division" : "/"}
+    types = {MULTIPLICATION : "x", DIVISION: "/"}
     try:
         type = pick("test type", list(types.keys()))
     except Exception as e:
@@ -58,8 +58,11 @@ def main():
                 loop = False
 
         # Randomly reverse the questions
-        if random.randint(0,10) > 5:
+        if type == MULTIPLICATION and random.randint(0,10) > 5:
             a,b = b,a
+
+        if type == DIVISION:
+            a = a*b
 
         print("Question {0}: What is {1} {2} {3}?".format(i,a,types[type],b))
 
@@ -72,12 +75,17 @@ def main():
             else:
                 print("Not a number, try again.")
 
-        if type == ("multiplication" and answer == (a*b)) or (type == "division" and answer == (a/b)):
+        if type == (MULTIPLICATION and answer == (a*b)) or (type == DIVISION and answer == (a/b)):
             print("*** Correct ***")
             score += 1
             passed.append((a,b))
         else:
-            print("Wrong !!!  The correct answer is {0} {1} {2} = {3}".format(a,types[type],b,a*b))
+            if type == MULTIPLICATION:
+                correct_answer = a*b
+            else:
+                correct_answer = a/b
+
+            print("Wrong !!!  The correct answer is {0} {1} {2} = {3}".format(a,types[type],b,correct_answer))
             failed.append((a,b))
 
         end_time = datetime.time()
@@ -94,13 +102,21 @@ def main():
 
     if len(passed) > 0:
         for a,b in passed:
+            if type == MULTIPLICATION:
+                answer = a*b
+            else:
+                answer = a/b
 
-            print("{0} {1} {2} = {3}".format(a,types[type],b, a*b))
+            print("{0} {1} {2} = {3}".format(a,types[type],b, answer))
 
     if len(failed) > 0:
         print("Wrong answers:")
         for a,b in failed:
-            print("{0} x {1} = {2}".format(a,b, a*b))
+            if type == MULTIPLICATION:
+                answer = a*b
+            else:
+                answer = a/b
+            print("{0} x {1} = {2}".format(a,b, answer))
 
 __author__ = 'user'
 
