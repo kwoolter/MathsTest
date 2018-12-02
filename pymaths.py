@@ -1,113 +1,65 @@
+__author__ = 'user'
+
 import random
 import datetime
+
+passed = []
+failed = []
 
 def main():
 
     MULTIPLICATION = "multiplication"
     DIVISION = "division"
+    HALVING = "halving"
 
     print("Welcome to the Maths Test!")
     name = input("What is your name? ")
 
-    types = {MULTIPLICATION : "x", DIVISION: "/"}
+    types = {MULTIPLICATION : "x", DIVISION: "/", HALVING : "halved"}
     try:
-        type = pick("test type", list(types.keys()))
+        type = pick("test type", sorted(list(types.keys())))
     except Exception as e:
         print(e)
         return
 
-    options = []
-    RANDOM = "Random Test"
-    options.append(RANDOM)
-    options += (list(range(2,13)))
+    # If you picked the halving test...
+    if type == HALVING:
 
-    try:
-        number = pick("test", options)
-    except Exception as e:
-        print(e)
-        return
+        # ...then this is a divide by 2 test with 20 questions and max numerator of 100
+        questions = 20
+        score = division_test(2, max_numerator=100, questions = questions)
 
-    if number == RANDOM:
-        test_type = "random test"
     else:
-        test_type = "{0} {1} test".format(number, type)
 
-    input("OK {0} - press Enter to start the {1}.\n".format(name, test_type))
+        questions = 5
+        options = []
 
-    score = 0
-    questions = 12
+        # Now pick the multiplier or divisor that you want to be tested on from 2-12 or random
+        RANDOM = "Random Test"
+        options.append(RANDOM)
+        options += (list(range(2,13)))
 
-    passed = []
-    failed = []
-    start_time = datetime.time()
-    #print("You started the test at {0}".format(datetime.strftime("%H:%M:%S", start_time)))
+        try:
+            number = pick("test", options)
+        except Exception as e:
+            print(e)
+            return
 
-    for i in range(1,questions + 1):
-
-        loop = True
-
-        while loop is True:
-
-            if type == RANDOM:
-                a = random.randint(1,12)
-            else:
-                a = number
-
-            b = random.randint(1,12)
-
-            # If we have not already passed this combination the we are good to ask this question
-            if (a,b) not in passed:
-                loop = False
-
-        question = (a,b)
-
-        # For multiplication randomly reverse the questions
-        if type == MULTIPLICATION and random.randint(0,10) > 5:
-            a,b = b,a
-
-        # For divide need to make b the answer to the question
         if type == DIVISION:
-            a_temp = a
-            a = a * b
-            b = a_temp
+            if number == RANDOM:
+                number = 0
+            score = division_test(number, max_numerator=number * 12, questions = questions)
 
-        print("Question {0}: What is {1} {2} {3}?".format(i,a,types[type],b))
+        elif type == MULTIPLICATION:
+            if number == RANDOM:
+                number = 0
+            score = multiplication_test(number, questions = questions)
 
-        good = False
-        while good is False:
-            answer = input("Answer=")
-            answer = is_numeric(answer)
-            if answer is not None:
-                good = True
-            else:
-                print("Not a number, try again.")
+    print("\n{0}, you scored {1} out of {2}.".format(name, score, questions))
 
-        if type == MULTIPLICATION:
-            correct_answer = a*b
-        else:
-            correct_answer = a/b
-
-        if answer == correct_answer:
-            print("*** Correct ***")
-            score += 1
-            passed.append(question)
-        else:
-            print("Wrong !!!  The correct answer is {0} {1} {2} = {3:0.0f}".format(a,types[type],b,correct_answer))
-            failed.append(question)
-
-        end_time = datetime.time()
-
-        input()
-
-    #print("You finished the test at {0}.".format(datetime.strftime("%H:%M:%S", end_time)), end="")
-    #elapsed = end_time-start_time
-    #print("That took you {0}".format(time.strftime("%M:%S", end_time-start_time)))
-
-
-    print("\nEnd of the Maths Test\n{0}, you scored {1} out of {2} in the {3}.".format(name, score, questions, test_type))
-    print("Correct answers:")
-
+    # Print out the detailed results...
     if len(passed) > 0:
+        print("Correct answers:")
         for a,b in passed:
             if type == MULTIPLICATION:
                 answer = a*b
@@ -132,7 +84,149 @@ def main():
 
             print("{0} {1} {2} = {3:0.0f}".format(a,types[type],b, answer))
 
-__author__ = 'user'
+    return
+
+
+def multiplication_test(multiplier : int, questions : int = 10):
+    # Run a multiplication based Maths Test
+    # multiplier = specific times table that you want to test
+    # multiplier = 0 is a random times table test between 2 and 12.
+
+    # Cap the number of questions to be 11
+    questions = min(questions, 11)
+
+    global passed
+    global failed
+
+    score = 0
+
+    print("Starting the multiply by {0} test with {1} questions...".format(multiplier, questions))
+    input()
+
+    # Loop asking the set number of questions in the test
+    for i in range(1,questions + 1):
+
+        loop = True
+
+        # Select a question that has not yet been passed
+        while loop is True:
+
+            if multiplier == 0:
+                a = random.randint(2,12)
+            else:
+                a = multiplier
+
+            b = random.randint(2,12)
+
+            # If we have not already passed this combination the we are good to ask this question
+            if (a,b) not in passed:
+                loop = False
+
+        question = (a,b)
+
+        # Randomly reverse the questions to make it harder
+        if random.randint(0,10) > 5:
+            a,b = b,a
+
+        print("Question {0}: What is {1} x {2}?".format(i,a,b))
+
+        # Get the user to enter a valid number
+        good = False
+        while good is False:
+            answer = input("Answer=")
+            answer = is_numeric(answer)
+            if answer is not None:
+                good = True
+            else:
+                print("Not a number, try again.")
+
+        # Now see if they were correct
+        correct_answer = a*b
+
+        if answer == correct_answer:
+            print("*** Correct ***")
+            score += 1
+            passed.append(question)
+        else:
+            print("Wrong !!!  The correct answer is {0} x {1} = {2}".format(a,b,correct_answer))
+            failed.append(question)
+
+        input()
+
+    return score
+
+def division_test(divisor : int, max_numerator : int = 144, questions : int = 10, ):
+    # Run a division based maths test
+    # divisor = 0 means random test with a random divisor between 2 and 12
+    # max_numerator - the biggest number that you want to test as the numerator
+    # questions - how many questions do you want to set
+
+    global passed
+    global failed
+
+    score = 0
+
+    if divisor != 0 :
+        # Cap the number of questions tha we can test
+        questions = min(questions, max_numerator // divisor - 1)
+        print("Starting the divide by {0} division test with {1} questions...".format(divisor, questions))
+    else:
+        print("Starting the random division test with {0} questions...".format(questions))
+
+    passed = []
+    failed = []
+    b = divisor
+
+    # Loop asking the set number of questions in the test
+    for i in range(1, questions + 1):
+
+        loop = True
+        if max_numerator == 0:
+            max_numerator = 144
+
+        while loop is True:
+
+            # Pick a random divisor (b)
+            if divisor == 0:
+                b = random.randint(2,12)
+
+            # Pick a random numerator (a)  based on divisor and max numerator
+            max_answer = max_numerator // b
+            a = random.randint(2, max_answer) * b
+
+            # If we have not already passed this combination the we are good to ask this question
+            if (a, b) not in passed:
+                loop = False
+
+        question = (a, b)
+
+        print("\nQuestion {0}: What is {1} / {2}?".format(i, a, b))
+
+        # Loop until we get a valid numerical answer from the user
+        good = False
+        while good is False:
+            answer = input("Answer = ")
+            answer = is_numeric(answer)
+            if answer is not None:
+                good = True
+            else:
+                print("Not a number, try again.")
+
+        # See if the user got the answer correct...
+        correct_answer = a / b
+
+        if answer == correct_answer:
+            print("*** Correct ***")
+            score += 1
+            passed.append(question)
+        else:
+            print("Wrong !!!  The correct answer is {0} / {1} = {2:.0f}".format(a, b, correct_answer))
+            failed.append(question)
+
+
+        input()
+
+    return score
 
 import logging, sys, time
 
