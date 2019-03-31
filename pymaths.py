@@ -31,7 +31,7 @@ def main():
 
     else:
 
-        questions = 5
+        questions = 12
         options = []
 
         # Now pick the multiplier or divisor that you want to be tested on from 2-12 or random
@@ -55,7 +55,7 @@ def main():
                 number = 0
             score = multiplication_test(number, questions = questions)
 
-    print("\n{0}, you scored {1} out of {2}.".format(name, score, questions))
+    print("\n{0}, you scored {1} out of {2}.".format(name, score, (len(passed) + len(failed))))
 
     # Print out the detailed results...
     if len(passed) > 0:
@@ -167,7 +167,7 @@ def division_test(divisor : int, max_numerator : int = 144, questions : int = 10
     score = 0
 
     if divisor != 0 :
-        # Cap the number of questions tha we can test
+        # Cap the number of questions that we can test
         questions = min(questions, max_numerator // divisor - 1)
         print("Starting the divide by {0} division test with {1} questions...".format(divisor, questions))
     else:
@@ -181,8 +181,7 @@ def division_test(divisor : int, max_numerator : int = 144, questions : int = 10
     for i in range(1, questions + 1):
 
         loop = True
-        if max_numerator == 0:
-            max_numerator = 144
+
 
         while loop is True:
 
@@ -190,8 +189,12 @@ def division_test(divisor : int, max_numerator : int = 144, questions : int = 10
             if divisor == 0:
                 b = random.randint(2,12)
 
-            # Pick a random numerator (a)  based on divisor and max numerator
-            max_answer = max_numerator // b
+            if max_numerator == 0:
+                max_answer = 12
+            else:
+                # Pick a random numerator (a)  based on divisor and max numerator
+                max_answer = max_numerator // b
+
             a = random.randint(2, max_answer) * b
 
             # If we have not already passed this combination the we are good to ask this question
@@ -222,7 +225,6 @@ def division_test(divisor : int, max_numerator : int = 144, questions : int = 10
         else:
             print("Wrong !!!  The correct answer is {0} / {1} = {2:.0f}".format(a, b, correct_answer))
             failed.append(question)
-
 
         input()
 
